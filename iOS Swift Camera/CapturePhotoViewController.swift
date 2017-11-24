@@ -28,7 +28,7 @@ class CapturePhotoViewController: UIViewController {
     super.viewDidLoad()
     
     // Do any additional setup after loading the view, typically from a nib.
-    captureSession.sessionPreset = AVCaptureSessionPresetHigh
+    captureSession.sessionPreset = AVCaptureSession.Preset.high
     
     //captureDevice = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)
     
@@ -37,9 +37,9 @@ class CapturePhotoViewController: UIViewController {
     // Loop through all the capture devices on this phone
     for device in devices {
       // Make sure this particular device supports video
-      if (device.hasMediaType(AVMediaTypeVideo)) {
+      if ((device as AnyObject).hasMediaType(AVMediaType.video)) {
         // Finally check the position and confirm we've got the back camera
-        if(device.position == AVCaptureDevicePosition.Back) {
+        if((device as AnyObject).position == AVCaptureDevice.Position.back) {
           captureDevice = device as? AVCaptureDevice
           if captureDevice != nil {
             print("Capture device found")
@@ -53,9 +53,9 @@ class CapturePhotoViewController: UIViewController {
       beginSession()
       
       if !(captureDevice!.hasTorch) {
-        flashButton.hidden = true
+        flashButton.isHidden = true
       } else {
-        flashButton.selected = false
+        flashButton.isSelected = false
       }
       
     }
@@ -72,7 +72,7 @@ class CapturePhotoViewController: UIViewController {
     
     let err : NSError? = nil
     do {
-      try captureSession.addInput(AVCaptureDeviceInput(device: captureDevice))
+      try captureSession.addInput(AVCaptureDeviceInput(device: captureDevice!))
     } catch {
       // nil
     }
@@ -83,24 +83,24 @@ class CapturePhotoViewController: UIViewController {
     
     streamLayer = AVCaptureVideoPreviewLayer(session: captureSession)
     streamView?.layer.addSublayer(streamLayer!)
-    streamLayer?.videoGravity = AVLayerVideoGravityResizeAspectFill
+    streamLayer?.videoGravity = AVLayerVideoGravity.resizeAspectFill
     
     stillImageOutput = AVCaptureStillImageOutput()
     stillImageOutput?.outputSettings = [AVVideoCodecKey : AVVideoCodecJPEG]
     
-    captureSession.addOutput(stillImageOutput)
+    captureSession.addOutput(stillImageOutput!)
     
     captureSession.startRunning()
   }
   
-  func toggleFlash(on : Bool) {
+  func toggleFlash(_ on : Bool) {
     if captureDevice!.hasTorch {
       do {
         try captureDevice!.lockForConfiguration()
         if on == false {
-          captureDevice!.torchMode = AVCaptureTorchMode.Off
+          captureDevice!.torchMode = AVCaptureDevice.TorchMode.off
         } else {
-          try captureDevice!.setTorchModeOnWithLevel(1.0)
+          try captureDevice!.setTorchModeOn(level: 1.0)
         }
         captureDevice!.unlockForConfiguration()
       } catch {
@@ -109,24 +109,24 @@ class CapturePhotoViewController: UIViewController {
     }
   }
   
-  @IBAction func toggleFlashButton (btn : UIButton) {
-    btn.selected = !btn.selected
+  @IBAction func toggleFlashButton (_ btn : UIButton) {
+    btn.isSelected = !btn.isSelected
   }
   
-  @IBAction func pinchGestureRecognized(gestureRecognizer: UIPinchGestureRecognizer) {
-    if gestureRecognizer.state == UIGestureRecognizerState.Began {
+  @IBAction func pinchGestureRecognized(_ gestureRecognizer: UIPinchGestureRecognizer) {
+    if gestureRecognizer.state == UIGestureRecognizerState.began {
       scale = gestureRecognizer.scale
     }
     
-    if gestureRecognizer.state == UIGestureRecognizerState.Began ||
-      gestureRecognizer.state == UIGestureRecognizerState.Changed {
+    if gestureRecognizer.state == UIGestureRecognizerState.began ||
+      gestureRecognizer.state == UIGestureRecognizerState.changed {
         
-        let currentScale = streamLayer?.valueForKeyPath("transform.scale")?.floatValue.CGFloatValue
+        let currentScale = (streamLayer?.value(forKeyPath: "transform.scale") as AnyObject).floatValue.CGFloatValue
         var newScale = 1 - (scale - gestureRecognizer.scale);
-        newScale = min(newScale, 2.0 / currentScale!)
-        newScale = max(newScale, 1.0 / currentScale!)
+        newScale = min(newScale, 2.0 / currentScale)
+        newScale = max(newScale, 1.0 / currentScale)
         
-        let transform = CGAffineTransformScale ((streamLayer?.affineTransform())!, newScale, newScale)
+        let transform = (streamLayer?.affineTransform())!.scaledBy (x: newScale, y: newScale)
         streamLayer?.setAffineTransform(transform)
         
         scale = gestureRecognizer.scale
@@ -135,45 +135,45 @@ class CapturePhotoViewController: UIViewController {
     
   }
   
-  func cropToZoom (img : UIImage) -> UIImage {
-    let currentScale = streamLayer?.valueForKeyPath("transform.scale")?.floatValue.CGFloatValue
+  func cropToZoom (_ img : UIImage) -> UIImage {
+    let currentScale = (streamLayer?.value(forKeyPath: "transform.scale") as AnyObject).floatValue.CGFloatValue
     if currentScale == 1.0 {
       return img
     }
     
-    let newW = img.size.width / currentScale!
-    let newH = img.size.height / currentScale!
+    let newW = img.size.width / currentScale
+    let newH = img.size.height / currentScale
     let newX1 = (img.size.width / 2) - (newW / 2)
     let newY1 = (img.size.height / 2) - (newH / 2)
     
-    let rect = CGRectMake( -newX1, -newY1, img.size.width, img.size.height)
+    let rect = CGRect( x: -newX1, y: -newY1, width: img.size.width, height: img.size.height)
     
-    UIGraphicsBeginImageContextWithOptions(CGSizeMake(newW, newH), true, 1.0)
-    img.drawInRect(rect)
+    UIGraphicsBeginImageContextWithOptions(CGSize(width: newW, height: newH), true, 1.0)
+    img.draw(in: rect)
     
     let result = UIGraphicsGetImageFromCurrentImageContext()
     UIGraphicsEndImageContext()
     
-    return result
+    return result!
   }
   
   func takePhoto () {
     
-    if let videoConnection = stillImageOutput!.connectionWithMediaType(AVMediaTypeVideo) {
-      videoConnection.videoOrientation = AVCaptureVideoOrientation.Portrait
-      stillImageOutput?.captureStillImageAsynchronouslyFromConnection(videoConnection, completionHandler: {(sampleBuffer, error) in
+    if let videoConnection = stillImageOutput!.connection(with: AVMediaType.video) {
+      videoConnection.videoOrientation = AVCaptureVideoOrientation.portrait
+      stillImageOutput?.captureStillImageAsynchronously(from: videoConnection, completionHandler: {(sampleBuffer, error) in
         if (sampleBuffer != nil) {
-          let imageData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(sampleBuffer)
-          let dataProvider = CGDataProviderCreateWithCFData(imageData)
-          let cgImageRef = CGImageCreateWithJPEGDataProvider(dataProvider, nil, true,CGColorRenderingIntent.RenderingIntentDefault)
+          let imageData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(sampleBuffer!)
+          let dataProvider = CGDataProvider(data: imageData as! CFData)
+          let cgImageRef = CGImage(jpegDataProviderSource: dataProvider!, decode: nil, shouldInterpolate: true,intent: CGColorRenderingIntent.defaultIntent)
           
-          let image = UIImage(CGImage: cgImageRef!, scale: 1.0, orientation: UIImageOrientation.Right)
+          let image = UIImage(cgImage: cgImageRef!, scale: 1.0, orientation: UIImageOrientation.right)
           self.previewImage.image = self.cropToZoom(image)
           
           self.delegate!.didTakePhoto(self.cropToZoom(image))
           
           self.scale = 0.0
-          self.streamLayer?.setAffineTransform(CGAffineTransformIdentity)
+          self.streamLayer?.setAffineTransform(CGAffineTransform.identity)
           
           self.toggleFlash(false)
           
@@ -183,20 +183,20 @@ class CapturePhotoViewController: UIViewController {
     
   }
   
-  @IBAction func capturePhoto (sender: UIButton) {
+  @IBAction func capturePhoto (_ sender: UIButton) {
     
     if (captureDevice != nil) {
-      self.toggleFlash(flashButton.selected)
+      self.toggleFlash(flashButton.isSelected)
       
-      let dispatchTime: dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(0.1 * Double(NSEC_PER_SEC)))
-      dispatch_after(dispatchTime, dispatch_get_main_queue(), {
+      let dispatchTime: DispatchTime = DispatchTime.now() + Double(Int64(0.1 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
+      DispatchQueue.main.asyncAfter(deadline: dispatchTime, execute: {
         self.takePhoto()
-        self.dismissViewControllerAnimated(true, completion: { })
+        self.dismiss(animated: true, completion: { })
       })
     } else {
       self.delegate!.didTakePhoto(UIImage(named: "LargeIcon")!)
       
-      self.dismissViewControllerAnimated(true, completion: { })
+      self.dismiss(animated: true, completion: { })
     }
     
   }
@@ -204,7 +204,7 @@ class CapturePhotoViewController: UIViewController {
 }
 
 protocol CapturePhotoDelegate {
-  func didTakePhoto (img : UIImage)
+  func didTakePhoto (_ img : UIImage)
 }
 
 extension Float {

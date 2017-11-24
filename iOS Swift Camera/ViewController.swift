@@ -11,7 +11,7 @@ import UIKit
 class ViewController: UIViewController {
   
   @IBOutlet weak var collectionView: UICollectionView!
-  let documentsURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[0]
+  let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
   var thumbnails:[String?]? = nil
   
   override func viewDidLoad() {
@@ -22,31 +22,31 @@ class ViewController: UIViewController {
   }
   
   @IBAction func takePhoto () {
-    self.performSegueWithIdentifier("segueCapturePhoto", sender: nil)
+    self.performSegue(withIdentifier: "segueCapturePhoto", sender: nil)
   }
   
   
-  @IBAction func recordVideo (sender: UIButton) {
-    self.performSegueWithIdentifier("segueRecordVideo", sender: nil)
+  @IBAction func recordVideo (_ sender: UIButton) {
+    self.performSegue(withIdentifier: "segueRecordVideo", sender: nil)
   }
   
-  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     if segue.identifier == "segueCapturePhoto" {
-      let vc = segue.destinationViewController as! CapturePhotoViewController
+      let vc = segue.destination as! CapturePhotoViewController
       vc.delegate = self
     }
   }
   
   func pathsForAllImages () -> [String?]? {
-    let url = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)[0]
+    let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
     var array:[String?]? = nil
     
-    let properties = [NSURLLocalizedNameKey, NSURLCreationDateKey, NSURLLocalizedTypeDescriptionKey]
+    let properties = [URLResourceKey.localizedNameKey, URLResourceKey.creationDateKey, URLResourceKey.localizedTypeDescriptionKey]
     
     print (url);
     
     do {
-      let directoryUrls = try NSFileManager.defaultManager().contentsOfDirectoryAtURL(url, includingPropertiesForKeys: properties, options:NSDirectoryEnumerationOptions.SkipsHiddenFiles)
+      let directoryUrls = try FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: properties, options:FileManager.DirectoryEnumerationOptions.skipsHiddenFiles)
       array = directoryUrls.map(){ $0.lastPathComponent }.filter(){ ($0! as NSString).pathExtension == "jpg" }
       if array?.count == 0 {
         array = nil
@@ -63,11 +63,11 @@ class ViewController: UIViewController {
 
 extension ViewController: CapturePhotoDelegate {
   
-  func didTakePhoto(img: UIImage) {
-    self.dismissViewControllerAnimated(true, completion: { })
+  func didTakePhoto(_ img: UIImage) {
+    self.dismiss(animated: true, completion: { })
     
-    let destinationPath = documentsURL.URLByAppendingPathComponent(NSUUID().UUIDString + ".jpg").path!
-    UIImageJPEGRepresentation(img, 1.0)!.writeToFile(destinationPath, atomically: true)
+    let destinationPath = documentsURL.appendingPathComponent(UUID().uuidString + ".jpg").path
+    try? UIImageJPEGRepresentation(img, 1.0)!.write(to: URL(fileURLWithPath: destinationPath), options: [.atomic])
     
     thumbnails = self.pathsForAllImages()
     collectionView.reloadData()
@@ -77,12 +77,12 @@ extension ViewController: CapturePhotoDelegate {
 
 extension ViewController: UICollectionViewDataSource {
   
-  func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+  func numberOfSections(in collectionView: UICollectionView) -> Int {
     return 1
   }
   
   
-  func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+  func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     if let images = thumbnails {
       return images.count
     } else {
@@ -90,11 +90,11 @@ extension ViewController: UICollectionViewDataSource {
     }
   }
   
-  func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-    let cell = collectionView.dequeueReusableCellWithReuseIdentifier("CellThumbnail", forIndexPath: indexPath) as! ThumbnailCell
+  func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CellThumbnail", for: indexPath) as! ThumbnailCell
     // Configure the cell
     if let files = thumbnails {
-      cell.thumbnail.image = UIImage(contentsOfFile: documentsURL.URLByAppendingPathComponent(files[indexPath.row]!).path!)
+      cell.thumbnail.image = UIImage(contentsOfFile: documentsURL.appendingPathComponent(files[indexPath.row]!).path)
     }
     
     return cell

@@ -104,6 +104,8 @@
 				TargetAttributes = {
 					00D4AD701BAB476F009114BB = {
 						CreatedOnToolsVersion = 7.1;
+						DevelopmentTeam = ME4966827L;
+						LastSwiftMigration = 0900;
 					};
 				};
 			};
@@ -260,10 +262,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = ME4966827L;
 				INFOPLIST_FILE = "iOS Swift Camera/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "pushplay.net.iOS-Swift-Camera";
+				PRODUCT_BUNDLE_IDENTIFIER = "xinyi.com.paulherz.Work-It";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -271,10 +277,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = ME4966827L;
 				INFOPLIST_FILE = "iOS Swift Camera/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "pushplay.net.iOS-Swift-Camera";
+				PRODUCT_BUNDLE_IDENTIFIER = "xinyi.com.paulherz.Work-It";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
