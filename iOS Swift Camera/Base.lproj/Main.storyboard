@@ -173,9 +173,6 @@
                                 <state key="normal" image="ButtonRecord">
                                     <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
-                                <connections>
-                                    <action selector="recordVideo:" destination="4yz-Bn-LKA" eventType="touchUpInside" id="wzn-Y3-A02"/>
-                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" alpha="0.59999999999999998" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00:15" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="u0H-5F-stx" userLabel="Time Elapsed">
                                 <rect key="frame" x="116" y="72" width="144" height="52"/>
@@ -226,7 +223,6 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="btnStartRecording" destination="duI-fD-mr1" id="wQp-I3-RNI"/>
                         <outlet property="elapsedTimeLabel" destination="u0H-5F-stx" id="6TI-eU-nMc"/>
                         <outlet property="videoPreviewView" destination="SK1-wm-PBQ" id="Ehp-Jj-lEn"/>
                     </connections>
