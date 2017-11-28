@@ -150,20 +150,48 @@ class RecordVideoViewController: UIViewController, AVCaptureVideoDataOutputSampl
         }
         
         //Configure output video settings, this should not impact the capture fps right? only affects the output file
-        let videoCompressionPropertys = [AVVideoAverageBitRateKey: self.videoPreviewView.bounds.width * self.videoPreviewView.bounds.height * 10.1]
-    
-        let videoSettings: [String: AnyObject] = [
-                AVVideoCodecKey: AVVideoCodecType.hevc as AnyObject,
-                AVVideoWidthKey: self.videoPreviewView.bounds.width as AnyObject,
-                AVVideoHeightKey: self.videoPreviewView.bounds.height as AnyObject,
-                AVVideoCompressionPropertiesKey:videoCompressionPropertys as AnyObject
-            ]
+//        let videoCompressionPropertys = [AVVideoAverageBitRateKey: self.videoPreviewView.bounds.width * self.videoPreviewView.bounds.height * 10.1]
+//
+//        let videoSettings: [String: AnyObject] = [
+//                AVVideoCodecKey: AVVideoCodecType.h264 as AnyObject,
+//                AVVideoWidthKey: self.videoPreviewView.bounds.width as AnyObject,
+//                AVVideoHeightKey: self.videoPreviewView.bounds.height as AnyObject,
+//                AVVideoCompressionPropertiesKey:videoCompressionPropertys as AnyObject
+//            ]
+//
+        //let videoCompressionPropertys = [AVVideoAverageBitRateKey: self.videoPreviewView.bounds.width * self.videoPreviewView.bounds.height * 10.1]
         
-        self.videoWriterInput = AVAssetWriterInput(mediaType: AVMediaType.video, outputSettings: nil)
+// 720p
+        let videoSettings = [
+            AVVideoCodecKey: AVVideoCodecType.h264,
+            AVVideoWidthKey: 1280,
+            AVVideoHeightKey: 720
+            ] as [String : Any]
+
+        
+//1080p
+//        let videoSettings = [
+//            AVVideoCodecKey: AVVideoCodecType.h264,
+//            AVVideoWidthKey: 1920,
+//            AVVideoHeightKey: 1080
+//            ] as [String : Any]
+        
+        
+        //4k
+//        let videoSettings = [
+//            AVVideoCodecKey: AVVideoCodecType.h264,
+//            AVVideoWidthKey: 3840,
+//            AVVideoHeightKey: 2160
+//            ] as [String : Any]
+//
+        // if we use nil, which means output uncompressed RGB, the file size is huge, 720p, 3 sconds 500MB and the fps is low around 10fps, also use mov
+        // so we need to use h264 or h265(hevc), supersingly, h264 also can get 240fps, which conflicts the doc, saying need to use hevc
+        //self.videoWriterInput = AVAssetWriterInput(mediaType: AVMediaType.video, outputSettings: nil)
+        self.videoWriterInput = AVAssetWriterInput(mediaType: AVMediaType.video, outputSettings: videoSettings)
         self.videoWriterInput!.expectsMediaDataInRealTime = true
         
         do {
-            self.videoWriter = try AVAssetWriter(outputURL: URL(fileURLWithPath: self.videoOutputFullFileName!), fileType: AVFileType.mov)
+            self.videoWriter = try AVAssetWriter(outputURL: URL(fileURLWithPath: self.videoOutputFullFileName!), fileType: AVFileType.mov) // change this using hevc?
         } catch let error as NSError {
             print("ERROR:::::>>>>>>>>>>>>>Cannot init videoWriter, error:\(error.localizedDescription)")
         }
@@ -173,6 +201,7 @@ class RecordVideoViewController: UIViewController, AVCaptureVideoDataOutputSampl
         } else {
             print("ERROR:::Cannot add videoWriterInput into videoWriter")
         }
+        
         
         if self.videoWriter!.status != AVAssetWriterStatus.writing {
             
@@ -247,9 +276,13 @@ class RecordVideoViewController: UIViewController, AVCaptureVideoDataOutputSampl
         
         //debuging
         // 1
+            
+        //let vFormat = device.formats[24] // 1080p 420v, 120fps
+        //   let vFormat = device.formats[25] // 1080p 420f
         
         //let vFormat = device.formats[30] // 4k 420v
         //let vFormat = device.formats[31] // 4k 420f
+        
         let vFormat = device.formats[19] // 720p 420v, 240fps
         
         // 2
@@ -268,7 +301,7 @@ class RecordVideoViewController: UIViewController, AVCaptureVideoDataOutputSampl
         }
         device.activeFormat = vFormat as AVCaptureDevice.Format
         device.activeVideoMinFrameDuration = frameRates.minFrameDuration
-        device.activeVideoMaxFrameDuration = frameRates.minFrameDuration // Get this clear
+        device.activeVideoMaxFrameDuration = frameRates.minFrameDuration // Always use the maximum framerate
         device.unlockForConfiguration()
         
     }
@@ -281,28 +314,28 @@ class RecordVideoViewController: UIViewController, AVCaptureVideoDataOutputSampl
         self.frameCount = self.frameCount + 1
         
         // Append the sampleBuffer into videoWriterInput
-//        if self.isRecordingVideo {
-//            if let writerInput = self.videoWriterInput {
-//                if writerInput.isReadyForMoreMediaData {
-//                    if self.videoWriter!.status == AVAssetWriterStatus.writing {
-//                        let whetherAppendSampleBuffer = self.videoWriterInput!.append(sampleBuffer)
-//
-//                        print(">>>>>>>>>>>>>The time::: \(self.lastSampleTime.value)/\(self.lastSampleTime.timescale)")
-//
-//                        if whetherAppendSampleBuffer {
-//                            print("DEBUG::: Append sample buffer successfully")
-//                        } else {
-//                            print("WARN::: Append sample buffer failed")
-//                        }
-//                    } else {
-//                        print("WARN:::The videoWriter status is not writing")
-//                    }
-//                }
-//
-//            } else {
-//                print("WARN:::Cannot append sample buffer into videoWriterInput")
-//            }
-//        }
+        if self.isRecordingVideo {
+            if let writerInput = self.videoWriterInput {
+                if writerInput.isReadyForMoreMediaData {
+                    if self.videoWriter!.status == AVAssetWriterStatus.writing {
+                        let whetherAppendSampleBuffer = self.videoWriterInput!.append(sampleBuffer)
+
+                        print(">>>>>>>>>>>>>The time::: \(self.lastSampleTime.value)/\(self.lastSampleTime.timescale)")
+
+                        if whetherAppendSampleBuffer {
+                            print("DEBUG::: Append sample buffer successfully")
+                        } else {
+                            print("WARN::: Append sample buffer failed")
+                        }
+                    } else {
+                        print("WARN:::The videoWriter status is not writing")
+                    }
+                }
+
+            } else {
+                print("WARN:::Cannot append sample buffer into videoWriterInput")
+            }
+        }
     }
 }
 
