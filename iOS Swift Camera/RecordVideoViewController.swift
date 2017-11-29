@@ -30,6 +30,7 @@ class RecordVideoViewController: UIViewController, AVCaptureVideoDataOutputSampl
     private var videoWriterInput: AVAssetWriterInput?
     private var videoWriter: AVAssetWriter?
     private var frameCount = 0
+    private var bitrate = 1280 * 720 * 1000
     
     lazy var isRecordingVideo: Bool = {
         let isRecordingVideo = false
@@ -63,7 +64,7 @@ class RecordVideoViewController: UIViewController, AVCaptureVideoDataOutputSampl
         //Configure the resolution, Preset seems not working if we have set the device activeFormat below
         //session?.sessionPreset = AVCaptureSession.Preset.hd4K3840x2160   // 4k
         //session?.sessionPreset = AVCaptureSession.Preset.hd1920x1080    // 1080P
-        //session?.sessionPreset = AVCaptureSession.Preset.hd1280x720    // 720P
+        session?.sessionPreset = AVCaptureSession.Preset.hd1280x720    // 720P
         //session?.sessionPreset =  AVCaptureSession.Preset.high
         
         self.videoDevice = AVCaptureDevice.default(for: AVMediaType.video)
@@ -150,7 +151,10 @@ class RecordVideoViewController: UIViewController, AVCaptureVideoDataOutputSampl
         }
         
         //Configure output video settings, this should not impact the capture fps right? only affects the output file
-//        let videoCompressionPropertys = [AVVideoAverageBitRateKey: self.videoPreviewView.bounds.width * self.videoPreviewView.bounds.height * 10.1]
+        // SEEMS HEVC (h265) is not supported ?
+        // https://developer.apple.com/documentation/avfoundation/avassetwriterinput/1385912-initwithmediatype
+        
+        let videoCompressionPropertys = [AVVideoAverageBitRateKey: self.videoPreviewView.bounds.width * self.videoPreviewView.bounds.height * 10.1]
 //
 //        let videoSettings: [String: AnyObject] = [
 //                AVVideoCodecKey: AVVideoCodecType.h264 as AnyObject,
@@ -165,7 +169,9 @@ class RecordVideoViewController: UIViewController, AVCaptureVideoDataOutputSampl
         let videoSettings = [
             AVVideoCodecKey: AVVideoCodecType.h264,
             AVVideoWidthKey: 1280,
-            AVVideoHeightKey: 720
+            AVVideoHeightKey: 720,
+            AVVideoProfileLevelKey: AVVideoProfileLevelH264High41, //use the best？
+            AVVideoCompressionPropertiesKey:[AVVideoAverageBitRateKey: self.bitrate]
             ] as [String : Any]
 
         
@@ -283,7 +289,7 @@ class RecordVideoViewController: UIViewController, AVCaptureVideoDataOutputSampl
         //let vFormat = device.formats[30] // 4k 420v
         //let vFormat = device.formats[31] // 4k 420f
         
-        let vFormat = device.formats[19] // 720p 420v, 240fps
+        let vFormat = device.formats[18] // 720p 420f, 240fps
         
         // 2
         var ranges = vFormat.videoSupportedFrameRateRanges as [AVFrameRateRange]
