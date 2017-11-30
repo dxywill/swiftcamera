@@ -12,10 +12,8 @@ import AVFoundation
 
 class RecordVideoViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
     
-    private var isRecording = false
-    //private var elapsedTime = 0.0
-    //private var elapsedTimer:Timer? = nil
-    //private var fileName:String? = nil
+    private var elapsedTime = 0.0
+    private var elapsedTimer:Timer? = nil
     
     @IBOutlet weak var videoPreviewView: UIView!
     @IBOutlet weak var elapsedTimeLabel: UILabel!
@@ -25,12 +23,23 @@ class RecordVideoViewController: UIViewController, AVCaptureVideoDataOutputSampl
     private var previewLayer: AVCaptureVideoPreviewLayer? = nil
     private var videoDevice: AVCaptureDevice? = nil
     
-    //New added
     private var videoOutputFullFileName: String?
     private var videoWriterInput: AVAssetWriterInput?
     private var videoWriter: AVAssetWriter?
     private var frameCount = 0
+    
+    private var captureMode = 3
+    private var maxFPS = 240.0
+    private var videoDimension = "1280x 720"
+    private var videoFormat = "420v"
     private var bitrate = 1280 * 720 * 1000
+    
+    private var videoSettings = [
+        AVVideoCodecKey: AVVideoCodecType.h264,
+        AVVideoWidthKey: 1280,
+        AVVideoHeightKey: 720,
+        AVVideoCompressionPropertiesKey:[AVVideoAverageBitRateKey: 1280 * 720 * 1000]
+        ] as [String : Any]
     
     lazy var isRecordingVideo: Bool = {
         let isRecordingVideo = false
@@ -48,23 +57,69 @@ class RecordVideoViewController: UIViewController, AVCaptureVideoDataOutputSampl
     }
     
     func setupRecording () {
+        self.initVariables()
         if session != nil {
             session!.stopRunning()
             session = nil
         }
         isRecordingVideo = false
+        elapsedTime = -1.0
         self.setupCaptureSession()
         self.updateElapsedTime()
         
     }
     
+    func initVariables() {
+        switch captureMode {
+        case 1:
+            self.maxFPS = 240
+            self.videoDimension = "1280x 720"
+            self.videoFormat = "420f"
+            self.bitrate = 1280 * 720 * 1000
+            self.videoSettings = [
+                AVVideoCodecKey: AVVideoCodecType.h264,
+                AVVideoWidthKey: 1280,
+                AVVideoHeightKey: 720,
+                AVVideoCompressionPropertiesKey:[AVVideoAverageBitRateKey: self.bitrate]
+                ] as [String : Any]
+            break
+        case 2:
+            self.maxFPS = 120
+            self.videoDimension = "1920x1080"
+            self.videoFormat = "420f"
+            self.bitrate = 1920 * 1080 * 1000
+            self.videoSettings = [
+                AVVideoCodecKey: AVVideoCodecType.h264,
+                AVVideoWidthKey: 1920,
+                AVVideoHeightKey: 1080,
+                //AVVideoProfileLevelKey: AVVideoProfileLevelH264High41, //use the best？
+                AVVideoCompressionPropertiesKey:[AVVideoAverageBitRateKey: self.bitrate]
+                ] as [String : Any]
+            break
+        case 3:
+            self.maxFPS = 30
+            self.videoDimension = "3840x2160"
+            self.videoFormat = "420f"
+            self.bitrate = 3840 * 2160 * 1000
+            self.videoSettings = [
+                AVVideoCodecKey: AVVideoCodecType.h264,
+                AVVideoWidthKey: 3840,
+                AVVideoHeightKey: 2160,
+                //AVVideoProfileLevelKey: AVVideoProfileLevelH264High41, //use the best？
+                AVVideoCompressionPropertiesKey:[AVVideoAverageBitRateKey: self.bitrate]
+                ] as [String : Any]
+            break
+        default:
+            break
+        }
+    }
     func setupCaptureSession () {
         
         session = AVCaptureSession()
         //Configure the resolution, Preset seems not working if we have set the device activeFormat below
         //session?.sessionPreset = AVCaptureSession.Preset.hd4K3840x2160   // 4k
         //session?.sessionPreset = AVCaptureSession.Preset.hd1920x1080    // 1080P
-        session?.sessionPreset = AVCaptureSession.Preset.hd1280x720    // 720P
+        //session?.sessionPreset = AVCaptureSession.Preset.hd1280x720    // 720P
         //session?.sessionPreset =  AVCaptureSession.Preset.high
         
         self.videoDevice = AVCaptureDevice.default(for: AVMediaType.video)
@@ -129,9 +184,10 @@ class RecordVideoViewController: UIViewController, AVCaptureVideoDataOutputSampl
         print(self.lastSampleTime.seconds)
         print(self.frameCount)
         
+        elapsedTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(RecordVideoViewController.updateElapsedTime), userInfo: nil, repeats: true)
         self.isRecordingVideo = true
         let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
-        self.videoOutputFullFileName = documentsPath + "/test_camera_capture_video.mov"
+        self.videoOutputFullFileName = documentsPath + "/\(self.videoDimension)_\(self.videoFormat).mov"
         
         if self.videoOutputFullFileName == nil {
             print("Error:The video output file name is nil")
@@ -154,46 +210,11 @@ class RecordVideoViewController: UIViewController, AVCaptureVideoDataOutputSampl
         // SEEMS HEVC (h265) is not supported ?
         // https://developer.apple.com/documentation/avfoundation/avassetwriterinput/1385912-initwithmediatype
         
-        let videoCompressionPropertys = [AVVideoAverageBitRateKey: self.videoPreviewView.bounds.width * self.videoPreviewView.bounds.height * 10.1]
-//
-//        let videoSettings: [String: AnyObject] = [
-//                AVVideoCodecKey: AVVideoCodecType.h264 as AnyObject,
-//                AVVideoWidthKey: self.videoPreviewView.bounds.width as AnyObject,
-//                AVVideoHeightKey: self.videoPreviewView.bounds.height as AnyObject,
-//                AVVideoCompressionPropertiesKey:videoCompressionPropertys as AnyObject
-//            ]
-//
-        //let videoCompressionPropertys = [AVVideoAverageBitRateKey: self.videoPreviewView.bounds.width * self.videoPreviewView.bounds.height * 10.1]
-        
-// 720p
-        let videoSettings = [
-            AVVideoCodecKey: AVVideoCodecType.h264,
-            AVVideoWidthKey: 1280,
-            AVVideoHeightKey: 720,
-            AVVideoProfileLevelKey: AVVideoProfileLevelH264High41, //use the best？
-            AVVideoCompressionPropertiesKey:[AVVideoAverageBitRateKey: self.bitrate]
-            ] as [String : Any]
-
-        
-//1080p
-//        let videoSettings = [
-//            AVVideoCodecKey: AVVideoCodecType.h264,
-//            AVVideoWidthKey: 1920,
-//            AVVideoHeightKey: 1080
-//            ] as [String : Any]
-        
-        
-        //4k
-//        let videoSettings = [
-//            AVVideoCodecKey: AVVideoCodecType.h264,
-//            AVVideoWidthKey: 3840,
-//            AVVideoHeightKey: 2160
-//            ] as [String : Any]
-//
+        //
         // if we use nil, which means output uncompressed RGB, the file size is huge, 720p, 3 sconds 500MB and the fps is low around 10fps, also use mov
         // so we need to use h264 or h265(hevc), supersingly, h264 also can get 240fps, which conflicts the doc, saying need to use hevc
         //self.videoWriterInput = AVAssetWriterInput(mediaType: AVMediaType.video, outputSettings: nil)
-        self.videoWriterInput = AVAssetWriterInput(mediaType: AVMediaType.video, outputSettings: videoSettings)
+        self.videoWriterInput = AVAssetWriterInput(mediaType: AVMediaType.video, outputSettings: self.videoSettings)
         self.videoWriterInput!.expectsMediaDataInRealTime = true
         
         do {
@@ -229,6 +250,7 @@ class RecordVideoViewController: UIViewController, AVCaptureVideoDataOutputSampl
         print(self.lastSampleTime.seconds)
         print(self.frameCount)
         self.isRecordingVideo = false
+        elapsedTimer?.invalidate()
         
         self.videoWriterInput!.markAsFinished()
         self.videoWriter!.finishWriting {
@@ -238,9 +260,9 @@ class RecordVideoViewController: UIViewController, AVCaptureVideoDataOutputSampl
                 
                 let fileManager = FileManager.default
                 if fileManager.fileExists(atPath: self.videoOutputFullFileName!) {
-                    print("DEBUG:::The file: \(self.videoOutputFullFileName) has been save into documents folder, and is ready to be moved to camera roll")
+                    print("DEBUG:::The file: \(self.videoOutputFullFileName!) has been save into documents folder, and is ready to be moved to camera roll")
                 } else {
-                    print("ERROR:::The file: \(self.videoOutputFullFileName) not exists, so cannot move this file camera roll")
+                    print("ERROR:::The file: \(self.videoOutputFullFileName!) not exists, so cannot move this file camera roll")
                 }
             } else {
                 print("WARN:::The videoWriter status is not completed, stauts: \(self.videoWriter!.status)")
@@ -248,69 +270,35 @@ class RecordVideoViewController: UIViewController, AVCaptureVideoDataOutputSampl
         }
     }
     
-    func updateElapsedTime () {
+    @objc func updateElapsedTime () {
+        elapsedTime += 1.0
+        elapsedTimeLabel.text = "00:" + String(format: "%02d", Int(round(elapsedTime)))
     }
     
     func setFPS(desiredFrameRate:Double){
         if let device = self.videoDevice{
-//
-//            device.unlockForConfiguration()
-//            // 1
-//            for vFormat in device.formats {
-//
-//                // 2
-//                var ranges = vFormat.videoSupportedFrameRateRanges as [AVFrameRateRange]
-//                let frameRates = ranges[0]
-//
-//                // 3
-//                if frameRates.maxFrameRate == 240 {
-//
-//                    // 4
-//                    do {
-//                        try device.lockForConfiguration()
-//                    } catch _ {
-//
-//                    }
-//                    device.activeFormat = vFormat as AVCaptureDevice.Format
-//                    device.activeVideoMinFrameDuration = frameRates.minFrameDuration
-//                    device.activeVideoMaxFrameDuration = frameRates.maxFrameDuration
-//                    device.unlockForConfiguration()
-//                }
-//            }
-//        }
-        
-        
-        //debuging
-        // 1
             
-        //let vFormat = device.formats[24] // 1080p 420v, 120fps
-        //   let vFormat = device.formats[25] // 1080p 420f
-        
-        //let vFormat = device.formats[30] // 4k 420v
-        //let vFormat = device.formats[31] // 4k 420f
-        
-        let vFormat = device.formats[18] // 720p 420f, 240fps
-        
-        // 2
-        var ranges = vFormat.videoSupportedFrameRateRanges as [AVFrameRateRange]
-        let frameRates = ranges[0]
-        
-        var description = vFormat.formatDescription
-        
-        // 3
-        
-        // 4
-        do {
-            try device.lockForConfiguration()
-        } catch _ {
-            
+            device.unlockForConfiguration()
+            for vFormat in device.formats {
+                
+                var ranges = vFormat.videoSupportedFrameRateRanges as [AVFrameRateRange]
+                let description = vFormat.description
+                let frameRates = ranges[0]
+                
+                if (frameRates.maxFrameRate == self.maxFPS) && (description.range(of: self.videoDimension) != nil) && (description.range(of: self.videoFormat) != nil) {
+                    
+                    do {
+                        try device.lockForConfiguration()
+                    } catch _ {
+                        
+                    }
+                    device.activeFormat = vFormat as AVCaptureDevice.Format
+                    device.activeVideoMinFrameDuration = frameRates.minFrameDuration
+                    device.activeVideoMaxFrameDuration = frameRates.minFrameDuration //Always set to use the maximum frame rate
+                    device.unlockForConfiguration()
+                }
+            }
         }
-        device.activeFormat = vFormat as AVCaptureDevice.Format
-        device.activeVideoMinFrameDuration = frameRates.minFrameDuration
-        device.activeVideoMaxFrameDuration = frameRates.minFrameDuration // Always use the maximum framerate
-        device.unlockForConfiguration()
-        
-    }
     }
     
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
@@ -325,9 +313,9 @@ class RecordVideoViewController: UIViewController, AVCaptureVideoDataOutputSampl
                 if writerInput.isReadyForMoreMediaData {
                     if self.videoWriter!.status == AVAssetWriterStatus.writing {
                         let whetherAppendSampleBuffer = self.videoWriterInput!.append(sampleBuffer)
-
+                        
                         print(">>>>>>>>>>>>>The time::: \(self.lastSampleTime.value)/\(self.lastSampleTime.timescale)")
-
+                        
                         if whetherAppendSampleBuffer {
                             print("DEBUG::: Append sample buffer successfully")
                         } else {
@@ -337,7 +325,7 @@ class RecordVideoViewController: UIViewController, AVCaptureVideoDataOutputSampl
                         print("WARN:::The videoWriter status is not writing")
                     }
                 }
-
+                
             } else {
                 print("WARN:::Cannot append sample buffer into videoWriterInput")
             }
