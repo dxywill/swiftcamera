@@ -7,27 +7,25 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		005628A11BAB5F4E00743023 /* CapturePhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 005628A01BAB5F4E00743023 /* CapturePhotoViewController.swift */; };
-		00A731D71BAC5478004C06F0 /* ThumbnailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A731D61BAC5478004C06F0 /* ThumbnailCell.swift */; };
 		00A731D91BAC5A29004C06F0 /* RecordVideoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A731D81BAC5A29004C06F0 /* RecordVideoViewController.swift */; };
 		00D4AD751BAB476F009114BB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D4AD741BAB476F009114BB /* AppDelegate.swift */; };
-		00D4AD771BAB476F009114BB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D4AD761BAB476F009114BB /* ViewController.swift */; };
 		00D4AD7A1BAB476F009114BB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00D4AD781BAB476F009114BB /* Main.storyboard */; };
 		00D4AD7C1BAB476F009114BB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 00D4AD7B1BAB476F009114BB /* Assets.xcassets */; };
 		00D4AD7F1BAB476F009114BB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00D4AD7D1BAB476F009114BB /* LaunchScreen.storyboard */; };
+		AEE6C1082000B7E400AE2BF9 /* EntryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE6C1072000B7E400AE2BF9 /* EntryViewController.swift */; };
+		AEE6C10A2000B85A00AE2BF9 /* ProgressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEE6C1092000B85A00AE2BF9 /* ProgressViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		005628A01BAB5F4E00743023 /* CapturePhotoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CapturePhotoViewController.swift; sourceTree = "<group>"; };
-		00A731D61BAC5478004C06F0 /* ThumbnailCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThumbnailCell.swift; sourceTree = "<group>"; };
 		00A731D81BAC5A29004C06F0 /* RecordVideoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordVideoViewController.swift; sourceTree = "<group>"; };
 		00D4AD711BAB476F009114BB /* iOS Swift Camera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iOS Swift Camera.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		00D4AD741BAB476F009114BB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		00D4AD761BAB476F009114BB /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		00D4AD791BAB476F009114BB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		00D4AD7B1BAB476F009114BB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		00D4AD7E1BAB476F009114BB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		00D4AD801BAB476F009114BB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AEE6C1072000B7E400AE2BF9 /* EntryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryViewController.swift; sourceTree = "<group>"; };
+		AEE6C1092000B85A00AE2BF9 /* ProgressViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,11 +58,10 @@
 		00D4AD731BAB476F009114BB /* iOS Swift Camera */ = {
 			isa = PBXGroup;
 			children = (
+				AEE6C1092000B85A00AE2BF9 /* ProgressViewController.swift */,
 				00D4AD741BAB476F009114BB /* AppDelegate.swift */,
-				00D4AD761BAB476F009114BB /* ViewController.swift */,
-				005628A01BAB5F4E00743023 /* CapturePhotoViewController.swift */,
+				AEE6C1072000B7E400AE2BF9 /* EntryViewController.swift */,
 				00A731D81BAC5A29004C06F0 /* RecordVideoViewController.swift */,
-				00A731D61BAC5478004C06F0 /* ThumbnailCell.swift */,
 				00D4AD781BAB476F009114BB /* Main.storyboard */,
 				00D4AD7B1BAB476F009114BB /* Assets.xcassets */,
 				00D4AD7D1BAB476F009114BB /* LaunchScreen.storyboard */,
@@ -145,10 +142,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				005628A11BAB5F4E00743023 /* CapturePhotoViewController.swift in Sources */,
 				00A731D91BAC5A29004C06F0 /* RecordVideoViewController.swift in Sources */,
-				00D4AD771BAB476F009114BB /* ViewController.swift in Sources */,
-				00A731D71BAC5478004C06F0 /* ThumbnailCell.swift in Sources */,
+				AEE6C1082000B7E400AE2BF9 /* EntryViewController.swift in Sources */,
+				AEE6C10A2000B85A00AE2BF9 /* ProgressViewController.swift in Sources */,
 				00D4AD751BAB476F009114BB /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

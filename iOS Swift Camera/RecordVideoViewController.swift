@@ -28,6 +28,7 @@ class RecordVideoViewController: UIViewController, AVCaptureVideoDataOutputSampl
     private var videoWriter: AVAssetWriter?
     private var frameCount = 0
     
+    var itr = "itr3"
     private var captureMode = 3
     private var maxFPS = 240.0
     private var videoDimension = "1280x 720"
@@ -53,6 +54,10 @@ class RecordVideoViewController: UIViewController, AVCaptureVideoDataOutputSampl
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("iter is \(itr)")
+        let userDefault = UserDefaults.standard
+        let participantID = userDefault.integer(forKey: "participantID")
+        print(participantID)
         self.setupRecording()
     }
     
@@ -187,7 +192,7 @@ class RecordVideoViewController: UIViewController, AVCaptureVideoDataOutputSampl
         elapsedTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(RecordVideoViewController.updateElapsedTime), userInfo: nil, repeats: true)
         self.isRecordingVideo = true
         let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
-        self.videoOutputFullFileName = documentsPath + "/\(self.videoDimension)_\(self.videoFormat).mov"
+        self.videoOutputFullFileName = documentsPath + "/\(self.videoDimension)_\(self.videoFormat)_\(self.itr).mov"
         
         if self.videoOutputFullFileName == nil {
             print("Error:The video output file name is nil")
