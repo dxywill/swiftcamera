@@ -15,6 +15,8 @@ class RecordVideoViewController: UIViewController, AVCaptureVideoDataOutputSampl
     private var elapsedTime = 0.0
     private var elapsedTimer:Timer? = nil
     
+    @IBOutlet weak var flashButton: UIButton!
+    
     @IBOutlet weak var videoPreviewView: UIView!
     @IBOutlet weak var elapsedTimeLabel: UILabel!
     
@@ -24,12 +26,14 @@ class RecordVideoViewController: UIViewController, AVCaptureVideoDataOutputSampl
     private var videoDevice: AVCaptureDevice? = nil
     
     private var videoOutputFullFileName: String?
+    private var videoTimeStampLog: URL!
     private var videoWriterInput: AVAssetWriterInput?
     private var videoWriter: AVAssetWriter?
     private var frameCount = 0
     
-    var itr = "itr3"
-    private var captureMode = 3
+    var itr = "iter1"
+    private var participantID = 0
+    private var captureMode = 1
     private var maxFPS = 240.0
     private var videoDimension = "1280x 720"
     private var videoFormat = "420v"
@@ -56,9 +60,9 @@ class RecordVideoViewController: UIViewController, AVCaptureVideoDataOutputSampl
         super.viewDidLoad()
         print("iter is \(itr)")
         let userDefault = UserDefaults.standard
-        let participantID = userDefault.integer(forKey: "participantID")
-        print(participantID)
+        self.participantID = userDefault.integer(forKey: "participantID")
         self.setupRecording()
+        self.flashButton.sendActions(for: .touchUpInside)
     }
     
     func setupRecording () {
@@ -184,6 +188,11 @@ class RecordVideoViewController: UIViewController, AVCaptureVideoDataOutputSampl
         }
     }
     
+    func getDocumentsDirectory() -> URL {
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        return paths[0]
+    }
+    
     @IBAction func recordRaw(_ sender: UIButton) {
         
         print(self.lastSampleTime.seconds)
@@ -192,12 +201,36 @@ class RecordVideoViewController: UIViewController, AVCaptureVideoDataOutputSampl
         elapsedTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(RecordVideoViewController.updateElapsedTime), userInfo: nil, repeats: true)
         self.isRecordingVideo = true
         let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
-        self.videoOutputFullFileName = documentsPath + "/\(self.videoDimension)_\(self.videoFormat)_\(self.itr).mov"
+        self.videoOutputFullFileName = documentsPath + "/\(self.participantID)_\(self.videoDimension)_\(self.videoFormat)_\(self.itr).mov"
+        self.videoTimeStampLog = getDocumentsDirectory().appendingPathComponent("/\(self.participantID)_\(self.videoDimension)_\(self.videoFormat)_\(self.itr).log")
+        
+        let timestamp = Date()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        var startTime = formatter.string(from: timestamp)
+        startTime = startTime + "\n"
+        
+        
+        if let outputStream = OutputStream(url: videoTimeStampLog, append: true) {
+            outputStream.open()
+            let bytesWritten = outputStream.write(startTime, maxLength: startTime.count)
+            if bytesWritten < 0 { print("write failure") }
+            outputStream.close()
+        } else {
+            print("Unable to open file")
+        }
+        
+//        do {
+//            try startTime.write(to: videoTimeStampLog, atomically: true, encoding: String.Encoding.utf8)
+//        } catch {
+//            // failed to write file – bad permissions, bad filename, missing permissions, or more likely it can't be converted to the encoding
+//        }
         
         if self.videoOutputFullFileName == nil {
             print("Error:The video output file name is nil")
             return
         }
+
         
         let fileManager = FileManager.default
         if fileManager.fileExists(atPath: self.videoOutputFullFileName!) {
@@ -272,6 +305,25 @@ class RecordVideoViewController: UIViewController, AVCaptureVideoDataOutputSampl
             } else {
                 print("WARN:::The videoWriter status is not completed, stauts: \(self.videoWriter!.status)")
             }
+        }
+        let userDefault = UserDefaults.standard
+        userDefault.set(true, forKey: self.itr)
+        dismiss(animated: true, completion: nil)
+        
+        let timestamp = Date()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        var endTime = formatter.string(from: timestamp)
+        endTime = endTime + "\n"
+        
+        
+        if let outputStream = OutputStream(url: self.videoTimeStampLog, append: true) {
+            outputStream.open()
+            let bytesWritten = outputStream.write(endTime, maxLength: endTime.count)
+            if bytesWritten < 0 { print("write failure") }
+            outputStream.close()
+        } else {
+            print("Unable to open file")
         }
     }
     

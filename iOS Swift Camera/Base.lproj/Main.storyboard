@@ -27,33 +27,65 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Jun-wg-RVE">
-                                <rect key="frame" x="139" y="201" width="68" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Iteration 1"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Jun-wg-RVE">
+                                <rect key="frame" x="87" y="191" width="200" height="50"/>
+                                <color key="backgroundColor" white="0.59999999999999998" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="gnJ-8r-Raa"/>
+                                </constraints>
+                                <state key="normal" title="Iteration 1">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
                                 <connections>
                                     <segue destination="4yz-Bn-LKA" kind="presentation" identifier="iter1" id="atY-Va-8n3"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7FB-4u-fUA">
-                                <rect key="frame" x="138" y="318" width="70" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Iteration 2"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7FB-4u-fUA">
+                                <rect key="frame" x="87" y="292" width="200" height="50"/>
+                                <color key="backgroundColor" white="0.59999999999999998" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="bQy-nG-tD8"/>
+                                </constraints>
+                                <state key="normal" title="Iteration 2">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
                                 <connections>
                                     <segue destination="4yz-Bn-LKA" kind="presentation" identifier="iter2" id="sM7-nV-mNy"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MCQ-DV-T8f">
-                                <rect key="frame" x="138" y="410" width="70" height="23"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Iteration 3"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MCQ-DV-T8f">
+                                <rect key="frame" x="87" y="396" width="200" height="50"/>
+                                <color key="backgroundColor" white="0.59999999999999998" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="tRP-Ss-yNM"/>
+                                </constraints>
+                                <state key="normal" title="Iteration 3">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
                                 <connections>
                                     <segue destination="4yz-Bn-LKA" kind="presentation" identifier="iter3" id="Uiu-Ss-fup"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="tintColor" white="0.75" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Jun-wg-RVE" firstAttribute="top" secondItem="Ydc-rf-TDc" secondAttribute="bottom" constant="127" id="6Du-qU-Xyu"/>
+                            <constraint firstItem="MCQ-DV-T8f" firstAttribute="trailing" secondItem="7FB-4u-fUA" secondAttribute="trailing" id="AZ0-5w-iDP"/>
+                            <constraint firstItem="Jun-wg-RVE" firstAttribute="centerX" secondItem="kzv-Kk-lx7" secondAttribute="centerX" id="QBL-Co-zym"/>
+                            <constraint firstItem="Jun-wg-RVE" firstAttribute="leading" secondItem="kzv-Kk-lx7" secondAttribute="leadingMargin" constant="71" id="XNw-O2-lEH"/>
+                            <constraint firstItem="7FB-4u-fUA" firstAttribute="top" secondItem="Jun-wg-RVE" secondAttribute="bottom" constant="51" id="dVS-bp-bHY"/>
+                            <constraint firstItem="7FB-4u-fUA" firstAttribute="trailing" secondItem="Jun-wg-RVE" secondAttribute="trailing" id="j0B-Vy-0C2"/>
+                            <constraint firstItem="MCQ-DV-T8f" firstAttribute="leading" secondItem="7FB-4u-fUA" secondAttribute="leading" id="rOK-NE-ExR"/>
+                            <constraint firstItem="MCQ-DV-T8f" firstAttribute="top" secondItem="7FB-4u-fUA" secondAttribute="bottom" constant="54" id="uvX-Uv-on5"/>
+                            <constraint firstItem="7FB-4u-fUA" firstAttribute="leading" secondItem="Jun-wg-RVE" secondAttribute="leading" id="z3F-wq-tbV"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="itrOneButton" destination="Jun-wg-RVE" id="buh-Oo-EtZ"/>
+                        <outlet property="itrThreeButton" destination="MCQ-DV-T8f" id="W9t-SI-cnR"/>
+                        <outlet property="itrTwoButton" destination="7FB-4u-fUA" id="g8o-iU-d8w"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kNJ-A2-Dur" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -71,31 +103,47 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Participant ID" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5gN-KB-gZ4">
-                                <rect key="frame" x="127" y="203" width="103" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="1dA-qA-D1I">
-                                <rect key="frame" x="127" y="247" width="97" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <nil key="textColor"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Gex-4R-E74">
-                                <rect key="frame" x="158" y="309" width="34" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Start"/>
-                                <connections>
-                                    <action selector="getParticipantID:" destination="Egf-pU-U5V" eventType="touchUpInside" id="12W-iF-fPr"/>
-                                    <segue destination="JBK-KG-AjC" kind="show" id="ZGD-Jq-0NT"/>
-                                </connections>
-                            </button>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="top" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="RGL-Ud-79D">
+                                <rect key="frame" x="87" y="276" width="200" height="115"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="hoY-GY-4T7">
+                                        <rect key="frame" x="0.0" y="0.0" width="200" height="50"/>
+                                        <subviews>
+                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="PID" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="1dA-qA-D1I">
+                                                <rect key="frame" x="0.0" y="0.0" width="200" height="50"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="50" id="V7w-3H-dcl"/>
+                                                    <constraint firstAttribute="width" constant="200" id="Xg6-Zn-Lhc"/>
+                                                </constraints>
+                                                <color key="textColor" white="0.59999999999999998" alpha="1" colorSpace="calibratedWhite"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <textInputTraits key="textInputTraits"/>
+                                            </textField>
+                                        </subviews>
+                                    </stackView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Gex-4R-E74">
+                                        <rect key="frame" x="0.0" y="65" width="200" height="50"/>
+                                        <color key="backgroundColor" white="0.59999999999999998" alpha="1" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="30" id="4zb-HJ-8eZ"/>
+                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="200" id="Q1t-PX-Gig"/>
+                                            <constraint firstAttribute="height" constant="50" id="hUL-ia-F6V"/>
+                                        </constraints>
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <state key="normal" title="Start"/>
+                                        <connections>
+                                            <action selector="getParticipantID:" destination="Egf-pU-U5V" eventType="touchUpInside" id="12W-iF-fPr"/>
+                                            <segue destination="JBK-KG-AjC" kind="show" id="ZGD-Jq-0NT"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="RGL-Ud-79D" firstAttribute="centerY" secondItem="29g-vt-wiO" secondAttribute="centerY" id="CFe-2u-VeF"/>
+                            <constraint firstItem="RGL-Ud-79D" firstAttribute="centerX" secondItem="29g-vt-wiO" secondAttribute="centerX" id="sra-Ym-fSa"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="mKz-NZ-Fro"/>
                     <connections>
@@ -126,9 +174,9 @@
                                 <rect key="frame" x="-4" y="577" width="383" height="90"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ylt-Vl-6dd">
-                                        <rect key="frame" x="278" y="30" width="30" height="30"/>
+                                        <rect key="frame" x="269" y="30" width="49" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <state key="normal" title="Raw"/>
+                                        <state key="normal" title="Record"/>
                                         <connections>
                                             <action selector="recordRaw:" destination="4yz-Bn-LKA" eventType="touchUpInside" id="HeY-18-wyz"/>
                                         </connections>
@@ -208,6 +256,7 @@
                     </view>
                     <connections>
                         <outlet property="elapsedTimeLabel" destination="u0H-5F-stx" id="6TI-eU-nMc"/>
+                        <outlet property="flashButton" destination="chm-2B-8Au" id="1v1-r2-ayG"/>
                         <outlet property="videoPreviewView" destination="SK1-wm-PBQ" id="Ehp-Jj-lEn"/>
                     </connections>
                 </viewController>
